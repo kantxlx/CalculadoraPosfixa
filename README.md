@@ -1,4 +1,4 @@
-# Avaliador de Expressões em Notação Pós-Fixada
+# Avaliador de Expressões em Notação Pós-Fixa
 
 Este projeto é um avaliador de expressões matemáticas em notação pós-fixada. O código é escrito em linguagem C e utiliza uma pilha para avaliar as expressões.
 
