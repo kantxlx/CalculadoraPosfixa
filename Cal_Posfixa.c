@@ -111,3 +111,17 @@ double avaliaExpressao(char *expressao) {
 
     return desempilha(&p); // retorna o resultado da expressão
 }
+
+int main() {
+    char expressao[100];
+
+    printf("Digite a expressão em notação Pós-fixada: ");
+    fgets(expressao, sizeof(expressao), stdin);
+    expressao[strcspn(expressao, "\n")] = 0; // remove o caractere de quebra de linha
+
+    double resultado = avaliaExpressao(expressao);
+
+    printf("Resultado: %.2lf\n", resultado);
+
+    return 0;
+}
