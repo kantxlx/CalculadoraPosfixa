@@ -51,50 +51,59 @@ double avaliaExpressao(char *expressao) {
     initPilha(&p); // inicializa a pilha
 
     char *token = strtok(expressao, " "); // divide a expressão em tokens separados por espaço
-    while (token != NULL) {
+    while (token!= NULL) {
         if (isdigit(token[0])) {
             empilha(&p, atof(token)); // empilha o valor numérico
         } else {
-            double numero2 = desempilha(&p); // desempilha o segundo operando
-            double numero1 = desempilha(&p); // desempilha o primeiro operando
-            switch (token[0]) {
-                case '+':
-                    empilha(&p, numero1 + numero2); // soma
-                    break;
-                case '-':
-                    empilha(&p, numero1 - numero2); // subtração
-                    break;
-                case '*':
-                    empilha(&p, numero1 * numero2); // multiplicação
-                    break;
-                case '/':
-                    if (numero2 == 0) {
-                        printf("Erro: Divisão por zero.\n");
+            if (strlen(token) == 1) { // operação binária
+                double numero2 = desempilha(&p); // desempilha o segundo operando
+                double numero1 = desempilha(&p); // desempilha o primeiro operando
+                switch (token[0]) {
+                    case '+':
+                        empilha(&p, numero1 + numero2); // soma
+                        break;
+                    case '-':
+                        empilha(&p, numero1 - numero2); // subtração
+                        break;
+                    case '*':
+                        empilha(&p, numero1 * numero2); // multiplicação
+                        break;
+                    case '/':
+                        if (numero2 == 0) {
+                            printf("Erro: Divisão por zero.\n");
+                            return 0;
+                        }
+                        empilha(&p, numero1 / numero2); // divisão
+                        break;
+                    case '^':
+                        empilha(&p, pow(numero1, numero2)); // potência
+                        break;
+                    default:
+                        printf("Erro: Operador inválido.\n");
                         return 0;
-                    }
-                    empilha(&p, numero1 / numero2); // divisão
-                    break;
-                case '^':
-                    empilha(&p, pow(numero1, numero2)); // potência
-                    break;
-                case 'r':
-                    empilha(&p, sqrt(numero1)); // raiz quadrada
-                    break;
-                case 's':
-                    empilha(&p, sin(numero1 * M_PI / 180)); // seno
-                    break;
-                case 'c':
-                    empilha(&p, cos(numero1 * M_PI / 180)); // cosseno
-                    break;
-                case 't':
-                    empilha(&p, tan(numero1 * M_PI / 180)); // tangente
-                    break;
-                case 'l':
-                    empilha(&p, log10(numero1)); // logaritmo
-                    break;
-                default:
-                    printf("Erro: Operador inválido.\n");
-                    return 0;
+                }
+            } else { // operação unária
+                double numero = desempilha(&p); // desempilha o operando
+                switch (token[0]) {
+                    case 'l':
+                        empilha(&p, log10(numero)); // logaritmo
+                        break;
+                    case 's':
+                        empilha(&p, sin(numero * M_PI / 180)); // seno
+                        break;
+                    case 'c':
+                        empilha(&p, cos(numero * M_PI / 180)); // cosseno
+                        break;
+                    case 't':
+                        empilha(&p, tan(numero * M_PI / 180)); // tangente
+                        break;
+                    case 'r':
+                        empilha(&p, sqrt(numero)); // raiz quadrada
+                        break;
+                    default:
+                        printf("Erro: Operador inválido.\n");
+                        return 0;
+                }
             }
         }
         token = strtok(NULL, " "); // próximo token
