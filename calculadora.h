@@ -1,23 +1,15 @@
-#ifndef CALCULADORA_H_INCLUDED
-#define CALCULADORA_H_INCLUDED
+#ifndef CALCULADORA_H
+#define CALCULADORA_H
 
-// Definição da estrutura da pilha
-typedef struct Pilha Pilha;
-typedef struct PilhaStr PilhaStr;
+typedef struct {
+    char posFixa[512];     // Expressão na forma pós-fixa, como 3 12 4 + *
+    char inFixa[512];      // Expressão na forma infixa, como 3 * (12 + 4)
+    char preFixa[512];     // Expressão na forma prefixa, como + * 3 12 4
+    float valor;           // Valor numérico da expressão  
+} Expressao;
 
-// Declarações das funções
-void initPilha(Pilha *p);
-void initPilhaStr(PilhaStr *p);
-int vazia(Pilha *p);
-int vaziaStr(PilhaStr *p);
-int cheia(Pilha *p);
-int cheiaStr(PilhaStr *p);
-void empilha(Pilha *p, double valor);
-void empilhaStr(PilhaStr *p, char *valor);
-double desempilha(Pilha *p);
-char* desempilhaStr(PilhaStr *p);
-double avaliaExpressao(char *expressao);
-void posfixaParaInfixa(char *expressao);
-void posfixaParaPrefixa(char *expressao);
+char *getFormaInFixa(char *Str);    // Retorna a forma infixa de Str (pós-fixa)
+char *getFormaPreFixa(char *Str);   // Retorna a forma prefixa de Str (pós-fixa)
+float getValor(char *Str);          // Calcula o valor de Str (na forma pós-fixa)
 
-#endif // CALCULADORA_H_INCLUDED
+#endif
