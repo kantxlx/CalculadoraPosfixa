@@ -6,15 +6,15 @@
 #include <ctype.h>
 
 // Definição da estrutura da pilha
-struct Pilha {
+typedef struct Pilha {
     double dados[100]; // array para armazenar os dados
     int topo; // índice do topo da pilha
-};
+} Pilha;
 
-struct PilhaStr {
+typedef struct PilhaStr {
     char dados[100][100]; // array para armazenar os dados
     int topo; // índice do topo da pilha
-};
+} PilhaStr;
 
 // Implementações das funções
 
@@ -79,7 +79,7 @@ char* desempilhaStr(PilhaStr *p) {
 }
 
 // Avalia a expressão em notação pós-fixada
-double avaliaExpressao(char *expressao) {
+float getValor(char *expressao) {
     Pilha p;
     initPilha(&p); // inicializa a pilha
 
@@ -126,7 +126,7 @@ double avaliaExpressao(char *expressao) {
                         empilha(&p, pow(numero1, numero2)); // potência
                         break;
                     default:
-                        printf("Erro: Operador inválido.\n");
+                        printf("Erro: Operador invalido.\n");
                         return 0;
                 }
             }
@@ -138,7 +138,7 @@ double avaliaExpressao(char *expressao) {
 }
 
 // Converte uma expressão em notação pós-fixada para notação infixa
-void posfixaParaInfixa(char *expressao) {
+char* getFormaInFixa(char *expressao) {
     PilhaStr p;
     initPilhaStr(&p); // inicializa a pilha de strings
 
@@ -171,11 +171,12 @@ void posfixaParaInfixa(char *expressao) {
         token = strtok(NULL, " "); // próximo token
     }
 
-    printf("Expressão Infixa: %s\n", desempilhaStr(&p)); // exibe a expressão infixa
+    printf("Expressao Infixa: %s\n", desempilhaStr(&p)); // exibe a expressão infixa
 }
 
-// Converte uma expressão em notação pós-fixada para notação prefixada
-void posfixaParaPrefixa(char *expressao) {
+
+// Converte uma expressão em notação pós-fixada para notação prefixa
+char* getFormaPreFixa(char *expressao) {
     PilhaStr p;
     initPilhaStr(&p); // inicializa a pilha de strings
 
@@ -209,6 +210,5 @@ void posfixaParaPrefixa(char *expressao) {
         token = strtok(NULL, " "); // próximo token
     }
 
-    printf("Expressão Prefixa: %s\n", desempilhaStr(&p)); // exibe a expressão prefixada
+    printf("Expressao Prefixa: %s\n", desempilhaStr(&p)); // exibe a expressão prefixada
 }
-
