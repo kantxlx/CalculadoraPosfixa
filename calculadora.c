@@ -97,14 +97,15 @@ double avaliaExpressao(char *expressao) {
         } else {
             if (strcmp(token, "log") == 0 || strcmp(token, "sen") == 0 || strcmp(token, "cos") == 0 || strcmp(token, "tan") == 0 || strcmp(token, "sqrt") == 0) {
                 double numero = desempilha(&p); // desempilha o operando
+                double pi = 3.14159265358979323846;
                 if (strcmp(token, "log") == 0) {
                     empilha(&p, log10(numero)); // logaritmo
                 } else if (strcmp(token, "sen") == 0) {
-                    empilha(&p, sin(numero * M_PI / 180)); // seno
+                    empilha(&p, sin(numero * pi / 180)); // seno
                 } else if (strcmp(token, "cos") == 0) {
-                    empilha(&p, cos(numero * M_PI / 180)); // cosseno
+                    empilha(&p, cos(numero * pi / 180)); // cosseno
                 } else if (strcmp(token, "tan") == 0) {
-                    empilha(&p, tan(numero * M_PI / 180)); // tangente
+                    empilha(&p, tan(numero * pi / 180)); // tangente
                 } else if (strcmp(token, "sqrt") == 0) {
                     empilha(&p, sqrt(numero)); // raiz quadrada
                 }
