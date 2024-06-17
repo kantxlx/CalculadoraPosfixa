@@ -5,7 +5,7 @@
 int main() {
     char expressao[100];
 
-    printf("Digite a expressao em notacaoo Posfixa: ");
+    printf("Digite a expressao em notacao Posfixa: ");
     fgets(expressao, sizeof(expressao), stdin);
     expressao[strcspn(expressao, "\n")] = 0; // remove o caractere de quebra de linha
 
