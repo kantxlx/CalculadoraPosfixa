@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <ctype.h>
 
 // Definição da estrutura da pilha
 typedef struct {
@@ -9,8 +10,18 @@ typedef struct {
     int topo; // índice do topo da pilha
 } Pilha;
 
+typedef struct {
+    char dados[100][100]; // array para armazenar os dados
+    int topo; // índice do topo da pilha
+} PilhaStr;
+
 // Inicializa a pilha
 void initPilha(Pilha *p) {
+    p->topo = -1; // inicializa o topo da pilha como -1
+}
+
+// Inicializa a pilha de strings
+void initPilhaStr(PilhaStr *p) {
     p->topo = -1; // inicializa o topo da pilha como -1
 }
 
@@ -19,8 +30,18 @@ int vazia(Pilha *p) {
     return p->topo == -1; // retorna 1 se a pilha estiver vazia, 0 caso contrário
 }
 
+// Verifica se a pilha de strings está vazia
+int vaziaStr(PilhaStr *p) {
+    return p->topo == -1; // retorna 1 se a pilha estiver vazia, 0 caso contrário
+}
+
 // Verifica se a pilha está cheia
 int cheia(Pilha *p) {
+    return p->topo == 99; // retorna 1 se a pilha estiver cheia, 0 caso contrário
+}
+
+// Verifica se a pilha de strings está cheia
+int cheiaStr(PilhaStr *p) {
     return p->topo == 99; // retorna 1 se a pilha estiver cheia, 0 caso contrário
 }
 
@@ -34,6 +55,16 @@ void empilha(Pilha *p, double valor) {
     p->dados[p->topo] = valor; // armazena o valor no topo da pilha
 }
 
+// Empilha um elemento na pilha de strings
+void empilhaStr(PilhaStr *p, char *valor) {
+    if (cheiaStr(p)) {
+        printf("Erro: Pilha cheia.\n");
+        return;
+    }
+    p->topo++; // incrementa o topo da pilha
+    strcpy(p->dados[p->topo], valor); // armazena o valor no topo da pilha
+}
+
 // Desempilha um elemento
 double desempilha(Pilha *p) {
     if (vazia(p)) {
@@ -45,17 +76,39 @@ double desempilha(Pilha *p) {
     return valor;
 }
 
+// Desempilha um elemento da pilha de strings
+char* desempilhaStr(PilhaStr *p) {
+    if (vaziaStr(p)) {
+        printf("Erro: Pilha vazia.\n");
+        return "";
+    }
+    return p->dados[p->topo--]; // recupera o valor do topo da pilha e decrementa o topo
+}
+
 // Avalia a expressão em notação pós-fixada
 double avaliaExpressao(char *expressao) {
     Pilha p;
     initPilha(&p); // inicializa a pilha
 
     char *token = strtok(expressao, " "); // divide a expressão em tokens separados por espaço
-    while (token!= NULL) {
-        if (isdigit(token[0])) {
+    while (token != NULL) {
+        if (isdigit(token[0]) || (token[0] == '-' && isdigit(token[1]))) {
             empilha(&p, atof(token)); // empilha o valor numérico
         } else {
-            if (strlen(token) == 1) { // operação binária
+            if (strcmp(token, "log") == 0 || strcmp(token, "sen") == 0 || strcmp(token, "cos") == 0 || strcmp(token, "tan") == 0 || strcmp(token, "sqrt") == 0) {
+                double numero = desempilha(&p); // desempilha o operando
+                if (strcmp(token, "log") == 0) {
+                    empilha(&p, log10(numero)); // logaritmo
+                } else if (strcmp(token, "sen") == 0) {
+                    empilha(&p, sin(numero * M_PI / 180)); // seno
+                } else if (strcmp(token, "cos") == 0) {
+                    empilha(&p, cos(numero * M_PI / 180)); // cosseno
+                } else if (strcmp(token, "tan") == 0) {
+                    empilha(&p, tan(numero * M_PI / 180)); // tangente
+                } else if (strcmp(token, "sqrt") == 0) {
+                    empilha(&p, sqrt(numero)); // raiz quadrada
+                }
+            } else {
                 double numero2 = desempilha(&p); // desempilha o segundo operando
                 double numero1 = desempilha(&p); // desempilha o primeiro operando
                 switch (token[0]) {
@@ -82,28 +135,6 @@ double avaliaExpressao(char *expressao) {
                         printf("Erro: Operador inválido.\n");
                         return 0;
                 }
-            } else { // operação unária
-                double numero = desempilha(&p); // desempilha o operando
-                switch (token[0]) {
-                    case 'l':
-                        empilha(&p, log10(numero)); // logaritmo
-                        break;
-                    case 's':
-                        empilha(&p, sin(numero * M_PI / 180)); // seno
-                        break;
-                    case 'c':
-                        empilha(&p, cos(numero * M_PI / 180)); // cosseno
-                        break;
-                    case 't':
-                        empilha(&p, tan(numero * M_PI / 180)); // tangente
-                        break;
-                    case 'r':
-                        empilha(&p, sqrt(numero)); // raiz quadrada
-                        break;
-                    default:
-                        printf("Erro: Operador inválido.\n");
-                        return 0;
-                }
             }
         }
         token = strtok(NULL, " "); // próximo token
@@ -112,16 +143,78 @@ double avaliaExpressao(char *expressao) {
     return desempilha(&p); // retorna o resultado da expressão
 }
 
-int main() {
-    char expressao[100];
+// Converte uma expressão em notação pós-fixada para notação infixa
+void posfixaParaInfixa(char *expressao) {
+    PilhaStr p;
+    initPilhaStr(&p); // inicializa a pilha de strings
 
-    printf("Digite a expressão em notação Pós-fixada: ");
-    fgets(expressao, sizeof(expressao), stdin);
-    expressao[strcspn(expressao, "\n")] = 0; // remove o caractere de quebra de linha
+    char expressaoCopia[100];
+    strcpy(expressaoCopia, expressao); // faz uma cópia da expressão
 
-    double resultado = avaliaExpressao(expressao);
+    char *token = strtok(expressaoCopia, " "); // divide a expressão em tokens separados por espaço
+    while (token != NULL) {
+        if (isdigit(token[0]) || (token[0] == '-' && isdigit(token[1]))) {
+            empilhaStr(&p, token); // empilha o valor numérico
+        } else {
+            if (strcmp(token, "log") == 0 || strcmp(token, "sen") == 0 || strcmp(token, "cos") == 0 || strcmp(token, "tan") == 0 || strcmp(token, "sqrt") == 0) {
+                char operando[100];
+                strcpy(operando, desempilhaStr(&p)); // desempilha o operando
 
-    printf("Resultado: %.2lf\n", resultado);
+                char novaExpr[100];
+                snprintf(novaExpr, sizeof(novaExpr), "(%s %s)", token, operando); // combina operador unário e operando
+                empilhaStr(&p, novaExpr); // empilha a nova expressão
+            } else {
+                char operando2[100];
+                char operando1[100];
+                strcpy(operando2, desempilhaStr(&p)); // desempilha o segundo operando
+                strcpy(operando1, desempilhaStr(&p)); // desempilha o primeiro operando
 
-    return 0;
+                char novaExpr[100];
+                snprintf(novaExpr, sizeof(novaExpr), "(%s %s %s)", operando1, token, operando2); // combina operador e operandos em notação infixa
+                empilhaStr(&p, novaExpr); // empilha a nova expressão
+            }
+        }
+        token = strtok(NULL, " "); // próximo token
+    }
+
+    printf("Expressão Infixa: %s\n", desempilhaStr(&p)); // exibe a expressão infixa
 }
+
+// Converte uma expressão em notação pós-fixada para notação prefixada
+void posfixaParaPrefixa(char *expressao) {
+    PilhaStr p;
+    initPilhaStr(&p); // inicializa a pilha de strings
+
+    char expressaoCopia[100];
+    strcpy(expressaoCopia, expressao); // faz uma cópia da expressão
+
+    char *token = strtok(expressaoCopia, " "); // divide a expressão em tokens separados por espaço
+    while (token != NULL) {
+        if (isdigit(token[0]) || (token[0] == '-' && isdigit(token[1])))
+        {
+            empilhaStr(&p, token); // empilha o valor numérico
+        } else {
+            if (strcmp(token, "log") == 0 || strcmp(token, "sen") == 0 || strcmp(token, "cos") == 0 || strcmp(token, "tan") == 0 || strcmp(token, "sqrt") == 0) {
+                char operando[100];
+                strcpy(operando, desempilhaStr(&p)); // desempilha o operando
+
+                char novaExpr[100];
+                snprintf(novaExpr, sizeof(novaExpr), "%s %s", token, operando); // combina operador unário e operando
+                empilhaStr(&p, novaExpr); // empilha a nova expressão
+            } else {
+                char operando2[100];
+                char operando1[100];
+                strcpy(operando2, desempilhaStr(&p)); // desempilha o segundo operando
+                strcpy(operando1, desempilhaStr(&p)); // desempilha o primeiro operando
+
+                char novaExpr[100];
+                snprintf(novaExpr, sizeof(novaExpr), "%s %s %s", token, operando1, operando2); // combina operador e operandos em notação prefixada
+                empilhaStr(&p, novaExpr); // empilha a nova expressão
+            }
+        }
+        token = strtok(NULL, " "); // próximo token
+    }
+
+    printf("Expressão Prefixa: %s\n", desempilhaStr(&p)); // exibe a expressão prefixada
+}
+
