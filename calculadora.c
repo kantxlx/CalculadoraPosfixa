@@ -1,52 +1,47 @@
+#include "calculadora.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
 #include <ctype.h>
-#include "calculadora.h"
 
 // Definição da estrutura da pilha
-typedef struct {
+struct Pilha {
     double dados[100]; // array para armazenar os dados
     int topo; // índice do topo da pilha
-} Pilha;
+};
 
-typedef struct {
+struct PilhaStr {
     char dados[100][100]; // array para armazenar os dados
     int topo; // índice do topo da pilha
-} PilhaStr;
+};
 
-// Inicializa a pilha
+// Implementações das funções
+
 void initPilha(Pilha *p) {
     p->topo = -1; // inicializa o topo da pilha como -1
 }
 
-// Inicializa a pilha de strings
 void initPilhaStr(PilhaStr *p) {
     p->topo = -1; // inicializa o topo da pilha como -1
 }
 
-// Verifica se a pilha está vazia
 int vazia(Pilha *p) {
     return p->topo == -1; // retorna 1 se a pilha estiver vazia, 0 caso contrário
 }
 
-// Verifica se a pilha de strings está vazia
 int vaziaStr(PilhaStr *p) {
     return p->topo == -1; // retorna 1 se a pilha estiver vazia, 0 caso contrário
 }
 
-// Verifica se a pilha está cheia
 int cheia(Pilha *p) {
     return p->topo == 99; // retorna 1 se a pilha estiver cheia, 0 caso contrário
 }
 
-// Verifica se a pilha de strings está cheia
 int cheiaStr(PilhaStr *p) {
     return p->topo == 99; // retorna 1 se a pilha estiver cheia, 0 caso contrário
 }
 
-// Empilha um elemento
 void empilha(Pilha *p, double valor) {
     if (cheia(p)) {
         printf("Erro: Pilha cheia.\n");
@@ -56,7 +51,6 @@ void empilha(Pilha *p, double valor) {
     p->dados[p->topo] = valor; // armazena o valor no topo da pilha
 }
 
-// Empilha um elemento na pilha de strings
 void empilhaStr(PilhaStr *p, char *valor) {
     if (cheiaStr(p)) {
         printf("Erro: Pilha cheia.\n");
@@ -66,7 +60,6 @@ void empilhaStr(PilhaStr *p, char *valor) {
     strcpy(p->dados[p->topo], valor); // armazena o valor no topo da pilha
 }
 
-// Desempilha um elemento
 double desempilha(Pilha *p) {
     if (vazia(p)) {
         printf("Erro: Pilha vazia.\n");
@@ -77,7 +70,6 @@ double desempilha(Pilha *p) {
     return valor;
 }
 
-// Desempilha um elemento da pilha de strings
 char* desempilhaStr(PilhaStr *p) {
     if (vaziaStr(p)) {
         printf("Erro: Pilha vazia.\n");
