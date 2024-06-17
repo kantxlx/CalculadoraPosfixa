@@ -13,14 +13,14 @@ int main() {
     char expressaoCopia[100];
     strcpy(expressaoCopia, expressao);
 
-    double resultado = avaliaExpressao(expressaoCopia);
+    double resultado = getValor(expressaoCopia);
     printf("Resultado: %.2lf\n", resultado);
 
     // Re-processa a expressão original para converter para notação infixa
-    posfixaParaInfixa(expressao);
+    getFormaInFixa(expressao);
 
     // Re-processa a expressão original para converter para notação prefixada
-    posfixaParaPrefixa(expressao);
+    getFormaPreFixa(expressao);
 
     return 0;
 }
