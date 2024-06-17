@@ -3,7 +3,7 @@
 #include <math.h>
 #include <string.h>
 #include <ctype.h>
-#include <calculadora.h>
+#include "calculadora.h"
 
 // Definição da estrutura da pilha
 typedef struct {
